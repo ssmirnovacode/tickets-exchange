@@ -28,8 +28,6 @@ router.post(
       throw new BadRequestError("Email already in use");
     }
 
-    // TODO password hashing
-
     const user = User.build({ email, password });
     await user.save();
 
@@ -39,7 +37,7 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      "secretPrivateKeyMock"
+      process.env.JWT_KEY! // TS is too cautious, we already checked it in index.ts
     );
 
     // redefining the session object for TS sake (instead of req.session.jwt = userJwt)
