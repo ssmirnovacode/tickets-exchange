@@ -2,15 +2,25 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import mongoose from "mongoose";
-import { currentUserRouter } from "./routes/current-user";
-import { signinRouter } from "./routes/signin";
-import { signoutRouter } from "./routes/signout";
-import { signupRouter } from "./routes/signup";
+import {
+  currentUserRouter,
+  signinRouter,
+  signoutRouter,
+  signupRouter,
+} from "./routes";
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors";
+import cookieSession from "cookie-session";
 
 const app = express();
+app.set("trust proxy", true); // making express trust proxy traffic from ngnix as secure
 app.use(json());
+app.use(
+  cookieSession({
+    signed: false, // disabled encryption
+    secure: true, // https only connection
+  })
+);
 
 app.use(currentUserRouter);
 app.use(signinRouter);
