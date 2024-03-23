@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 let mongo: MongoMemoryServer;
 
 beforeAll(async () => {
+  process.env.JWT_key = "whatever"; // we do this to mock env variables that isnt accessible to jest
+
   mongo = await MongoMemoryServer.create();
   const mongoUri = mongo.getUri();
 
