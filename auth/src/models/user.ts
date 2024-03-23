@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Password } from "../services/password";
+import { PasswordManager } from "../services/password-manager";
 
 interface UserAttrs {
   email: string;
@@ -44,7 +44,7 @@ userSchema.pre("save", async function (done) {
 
   // mongoose way to check if passpord was modified and needs to be hashed
   if (this.isModified("password")) {
-    const hashed = await Password.toHash(this.get("password"));
+    const hashed = await PasswordManager.toHash(this.get("password"));
     this.set("password", hashed);
   }
 });
