@@ -16,16 +16,28 @@ interface UserDoc extends mongoose.Document {
   // extra props can be added here
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String, // mongoose String, not ts
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String, // mongoose String, not ts
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    toJSON: {
+      transform(doc, returnObj) {
+        returnObj.id = returnObj._id;
+        delete returnObj.password;
+        delete returnObj.__v;
+        delete returnObj._id;
+      },
+    },
+  }
+);
 
 userSchema.pre("save", async function (done) {
   // we user 'function' to have context for 'this'
