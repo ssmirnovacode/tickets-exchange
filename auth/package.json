@@ -25,14 +25,14 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.3",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "@types/express": "^4.17.21",
+    "@types/cookie-session": "^2.0.48",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/mongoose": "^5.11.97"
   },
   "devDependencies": {
-    "@types/cookie-session": "^2.0.48",
-    "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/mongoose": "^5.11.97",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^9.1.7",
