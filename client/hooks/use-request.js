@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { baseURL } from '../app/helpers/constants';
 
 export default ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
@@ -7,7 +8,7 @@ export default ({ url, method, body, onSuccess }) => {
   const doRequest = async () => {
     try {
       setErrors(null);
-      const response = await axios[method](url, body);
+      const response = await axios[method](`${baseURL}${url}`, body);
 
       if (onSuccess) {
         onSuccess(response.data);
