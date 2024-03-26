@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app } from "../../app";
+import { Ticket } from "../../models/ticket";
 
 describe("/new", () => {
   it("has a route handler listening to /api/tickets for POST requests", async () => {
@@ -49,11 +50,15 @@ describe("/new", () => {
   });
 
   it("creates a tickets with valid parameters", async () => {
-    // TODO add in a check to make sure the ticket was saved to DB
+    let tickets = await Ticket.find({}); // should be 0 items, coz we set beforeAll to delete everything
+
     await request(app)
       .post("/api/tickets")
       .set("Cookie", global.signin())
       .send({ title: "foobar", price: "10" })
-      .expect(200);
+      .expect(201);
+
+    tickets = await Ticket.find({});
+    expect(tickets.length).toEqual(1);
   });
 });
