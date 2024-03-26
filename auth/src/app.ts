@@ -7,8 +7,7 @@ import {
   signoutRouter,
   signupRouter,
 } from "./routes";
-import { errorHandler } from "./middlewares/error-handler";
-import { NotFoundError } from "./errors";
+import { errorHandler, NotFoundError } from "@ticketsx/common";
 import cookieSession from "cookie-session";
 
 const app = express();
