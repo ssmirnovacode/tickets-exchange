@@ -23,4 +23,4 @@ router.post(
   }
 );
 
-export { router as newTicketRouter };
+export { router as createTicketRouter };
