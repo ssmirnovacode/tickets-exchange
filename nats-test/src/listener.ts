@@ -16,7 +16,11 @@ stan.on("connect", () => {
     process.exit();
   });
 
-  const options = stan.subscriptionOptions().setManualAckMode(true); // we use chaining to configure options
+  const options = stan
+    .subscriptionOptions()
+    .setManualAckMode(true)
+    .setDeliverAllAvailable()
+    .setDurableName("orders-service"); // we use chaining to configure options
 
   const subscription = stan.subscribe(
     "ticket:created",
