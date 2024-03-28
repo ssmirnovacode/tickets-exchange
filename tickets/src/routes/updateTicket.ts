@@ -7,6 +7,8 @@ import {
   NotAuthorizedError,
 } from "@ticketsx/common";
 import { body } from "express-validator";
+import { natsWrapper } from "../nats-wrapper";
+import { TicketUpdatedPublisher } from "../events/publishers/ticker-updated.publisher";
 
 const router = Router();
 
@@ -33,6 +35,13 @@ router.put(
       price: req.body.price,
     });
     await ticket.save();
+    await new TicketUpdatedPublisher(natsWrapper.client).publish({
+      // we should pull these attrs from the ticket saved in DB, not the body
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.send(ticket);
   }
