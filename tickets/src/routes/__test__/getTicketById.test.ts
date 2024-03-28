@@ -2,7 +2,6 @@ import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
 
-jest.mock("../../nats-wrapper");
 describe("/api/tickets - GET one ticket", () => {
   it("returns 404 if ticket is not found", async () => {
     // generating 24 hex string id required for MongoDB:
