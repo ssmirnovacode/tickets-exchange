@@ -2,6 +2,8 @@ import { Request, Response, Router } from "express";
 import { requireAuth, validateRequest } from "@ticketsx/common";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = Router();
 
@@ -19,6 +21,14 @@ router.post(
 
     const ticket = Ticket.build({ title, price, userId: req.currentUser!.id }); // requireAuth makes sure currentUser is defined
     await ticket.save();
+    await new TicketCreatedPublisher(natsWrapper.client).publish({
+      // we should pull these attrs from the ticket saved in DB, not the body
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
+
     res.status(201).send(ticket);
   }
 );
