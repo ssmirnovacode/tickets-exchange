@@ -8,7 +8,7 @@ import {
 } from "@ticketsx/common";
 import { body } from "express-validator";
 import { natsWrapper } from "../nats-wrapper";
-import { baseUrl } from "../constants";
+import { EXPIRATION_SECONDS, baseUrl } from "../constants";
 import mongoose from "mongoose";
 import { Ticket } from "../models/ticket";
 import { Order } from "../models/order";
@@ -42,12 +42,21 @@ router.post(
     }
 
     // calculate the expiration time:
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_SECONDS);
 
     // build the order and save it to the DB
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      ticket,
+      expiresAt: expiration,
+      status: OrderStatus.Created,
+    });
+    await order.save();
 
     // publish the event order:created
 
-    res.send({});
+    res.status(201).send(order);
   }
 );
 
