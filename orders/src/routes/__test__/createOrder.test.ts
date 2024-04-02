@@ -60,10 +60,14 @@ describe("create order", () => {
     });
     await ticket.save();
 
-    await request(app)
+    const response = await request(app)
       .post(baseUrl)
       .set("Cookie", global.signin())
       .send({ ticketId: ticket.id })
       .expect(201);
+
+    expect(response.body.ticket.id).toEqual(ticket.id);
   });
+
+  it.todo("emits an order:created event");
 });
