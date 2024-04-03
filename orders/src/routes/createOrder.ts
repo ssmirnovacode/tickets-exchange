@@ -12,6 +12,7 @@ import { EXPIRATION_SECONDS, baseUrl } from "../constants";
 import mongoose from "mongoose";
 import { Ticket } from "../models/ticket";
 import { Order } from "../models/order";
+import { OrderCreatedPublisher } from "../events/publishers/order-created-publisher";
 
 const router = Router();
 
@@ -54,7 +55,18 @@ router.post(
     });
     await order.save();
 
-    // publish the event order:created
+    const { id, status, userId, expiresAt, ticket: orderTicket } = order;
+
+    new OrderCreatedPublisher(natsWrapper.client).publish({
+      id,
+      status: status as OrderStatus.Created,
+      expiresAt: expiresAt.toISOString(), // UTC time zone
+      userId,
+      ticket: {
+        id: orderTicket.id,
+        price: orderTicket.price,
+      },
+    });
 
     res.status(201).send(order);
   }
