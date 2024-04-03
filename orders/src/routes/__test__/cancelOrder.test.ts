@@ -4,6 +4,7 @@ import { baseUrl } from "../../constants";
 import { app } from "../../app";
 import { createTicketAndOrder } from "./helpers";
 import { OrderStatus } from "@ticketsx/common";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("cancel order", () => {
   it("returns 404 if order is not found", async () => {
@@ -42,5 +43,20 @@ describe("cancel order", () => {
     expect(fetchedOrder.status).toEqual(OrderStatus.Cancelled);
   });
 
-  it.todo("emits order:cancelled event");
+  it("emits order:cancelled event", async () => {
+    const { order, user } = await createTicketAndOrder();
+    await request(app)
+      .delete(`${baseUrl}/${order.id}`)
+      .set("Cookie", user)
+      .send()
+      .expect(204);
+
+    await request(app)
+      .get(`${baseUrl}/${order.id}`)
+      .set("Cookie", user)
+      .send()
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });
