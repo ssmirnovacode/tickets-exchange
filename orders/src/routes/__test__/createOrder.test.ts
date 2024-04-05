@@ -6,6 +6,7 @@ import { Ticket } from "../../models/ticket";
 import { Order } from "../../models/order";
 import { OrderStatus } from "@ticketsx/common";
 import { natsWrapper } from "../../nats-wrapper";
+import { buildTicket } from "./helpers";
 
 describe("create order", () => {
   it("returns 401 if not authenticated", async () => {
@@ -33,11 +34,7 @@ describe("create order", () => {
   });
 
   it("returns an error if the ticket is already reserved", async () => {
-    const ticket = Ticket.build({
-      title: "concert",
-      price: 23,
-    });
-    await ticket.save();
+    const ticket = await buildTicket();
 
     const order = Order.build({
       ticket,
@@ -55,11 +52,7 @@ describe("create order", () => {
   });
 
   it("reserves the ticket", async () => {
-    const ticket = Ticket.build({
-      title: "concert",
-      price: 25,
-    });
-    await ticket.save();
+    const ticket = await buildTicket();
 
     const response = await request(app)
       .post(baseUrl)
@@ -71,13 +64,9 @@ describe("create order", () => {
   });
 
   it("emits an order:created event", async () => {
-    const ticket = Ticket.build({
-      title: "concert",
-      price: 25,
-    });
-    await ticket.save();
+    const ticket = await buildTicket();
 
-    const response = await request(app)
+    await request(app)
       .post(baseUrl)
       .set("Cookie", global.signin())
       .send({ ticketId: ticket.id })

@@ -2,15 +2,8 @@ import request from "supertest";
 import { baseUrl } from "../../constants";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
-
-const buildTicket = async () => {
-  const ticket = Ticket.build({
-    title: "concert",
-    price: 20,
-  });
-  await ticket.save();
-  return ticket;
-};
+import mongoose from "mongoose";
+import { buildTicket } from "./helpers";
 
 describe("get all current user's orders", () => {
   it("returns error if not authenticated", async () => {
