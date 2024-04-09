@@ -55,10 +55,18 @@ router.post(
     });
     await order.save();
 
-    const { id, status, userId, expiresAt, ticket: orderTicket } = order;
+    const {
+      id,
+      status,
+      userId,
+      expiresAt,
+      ticket: orderTicket,
+      version,
+    } = order;
 
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id,
+      version,
       status: status as OrderStatus.Created,
       expiresAt: expiresAt.toISOString(), // UTC time zone
       userId,

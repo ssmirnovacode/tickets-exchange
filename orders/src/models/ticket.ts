@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Order } from "./order";
 import { OrderStatus } from "@ticketsx/common";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface TicketAttrs {
   id: string;
@@ -12,7 +13,7 @@ interface TicketAttrs {
 export interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
-  //version: string;
+  version: number;
   isReserved(): Promise<boolean>;
 }
 
@@ -45,6 +46,9 @@ const ticketSchema = new mongoose.Schema(
     },
   }
 );
+
+ticketSchema.set("versionKey", "version"); // changing default field '__v' to 'version'
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
   return new Ticket({

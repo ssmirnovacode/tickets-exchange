@@ -24,6 +24,7 @@ router.post(
     await new TicketCreatedPublisher(natsWrapper.client).publish({
       // we should pull these attrs from the ticket saved in DB, not the body
       id: ticket.id,
+      version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId,
