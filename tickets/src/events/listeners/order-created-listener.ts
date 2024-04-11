@@ -21,12 +21,14 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     await ticket.save();
 
     // protected client property available from parent class
+    // @ts-ignore
     await new TicketUpdatedPublisher(this.client).publish({
       id: ticket.id,
       version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId,
+      // @ts-ignore
       orderId: ticket.orderId,
     });
 
