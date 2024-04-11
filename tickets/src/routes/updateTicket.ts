@@ -5,6 +5,7 @@ import {
   validateRequest,
   NotFoundError,
   NotAuthorizedError,
+  BadRequestError,
 } from "@ticketsx/common";
 import { body } from "express-validator";
 import { natsWrapper } from "../nats-wrapper";
@@ -30,6 +31,13 @@ router.put(
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
     }
+
+    if (ticket.orderId) {
+      throw new BadRequestError(
+        "Can't update: the ticket is already processed in an order"
+      );
+    }
+
     ticket.set({
       title: req.body.title,
       price: req.body.price,
