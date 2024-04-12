@@ -580,9 +580,9 @@
     "@sinonjs/commons" "^3.0.0"
 
 "@ticketsx/common@^1.0.5":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@ticketsx/common/-/common-1.0.15.tgz#ee6633d9fa7aa7dc26f8d4d93c979f86a45c24e5"
-  integrity sha512-QYjnrkC7rFygcsEkEYjgATPooW/QUFK1EXgsi6gJqEm495VhhdLTWfRAo5vHSKia6kZhV38ppXLfH96s2weQjw==
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@ticketsx/common/-/common-1.0.17.tgz#1ad9b56ed6ae7810d059a144ae3e5c821218e6ea"
+  integrity sha512-w0BkmwaKTw17BEO5MOMPA6CAs9VBP7r6yTmjXR/BP1z8iFo3t4OrrHTK1qos3isz+jLZyXmE+TZ73MeqXiMyqA==
   dependencies:
     "@types/cookie-session" "^2.0.48"
     "@types/express" "^4.17.21"
