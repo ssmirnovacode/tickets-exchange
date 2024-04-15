@@ -4,6 +4,7 @@ import { json } from "body-parser";
 
 import { errorHandler, NotFoundError, currentUser } from "@ticketsx/common";
 import cookieSession from "cookie-session";
+import { newChargeRouter } from "./routes/new-charge";
 
 const app = express();
 app.set("trust proxy", true); // making express trust proxy traffic from ngnix as secure
@@ -16,6 +17,8 @@ app.use(
 );
 
 app.use(currentUser);
+
+app.use(newChargeRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();
