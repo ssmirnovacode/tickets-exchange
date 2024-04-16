@@ -11,6 +11,7 @@ import { body } from "express-validator";
 import { natsWrapper } from "../nats-wrapper";
 import { Order } from "../models/order";
 import { baseUrl } from "../constants";
+import { stripe } from "../stripe";
 
 const router = Router();
 router.post(
@@ -34,7 +35,14 @@ router.post(
     if (order.status === OrderStatus.Cancelled) {
       throw new BadRequestError("Can not pay for cancelled order");
     }
-    res.send({ success: true });
+
+    await stripe.charges.create({
+      currency: "usd",
+      amount: order.price * 100, // converting into cents
+      source: token, // stripe test token "tok_visa"
+    });
+
+    res.status(201).send({ success: true });
   }
 );
 
