@@ -5,8 +5,24 @@ import { app } from "../../app";
 import { Order } from "../../models/order";
 import { OrderStatus } from "@ticketsx/common";
 import { stripe } from "../../stripe";
+import { Payment } from "../../models/payment";
 
 jest.mock("../../stripe");
+
+const createOrder = async (status: OrderStatus = OrderStatus.Created) => {
+  const userId = new mongoose.Types.ObjectId().toHexString();
+  const order = Order.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    userId,
+    version: 0,
+    price: 20,
+    status,
+  });
+  await order.save();
+
+  return { order, userId };
+};
+
 describe("new charge", () => {
   it("throws an error if user is not authenticated", async () => {
     await request(app).post(baseUrl).send({}).expect(401);
@@ -32,14 +48,7 @@ describe("new charge", () => {
   });
 
   it("throws a not authorized error if the order doesn not belong to current user", async () => {
-    const order = Order.build({
-      id: new mongoose.Types.ObjectId().toHexString(),
-      userId: new mongoose.Types.ObjectId().toHexString(),
-      version: 0,
-      price: 20,
-      status: OrderStatus.Created,
-    });
-    await order.save();
+    const { order, userId } = await createOrder();
 
     await request(app)
       .post(baseUrl)
@@ -52,15 +61,7 @@ describe("new charge", () => {
   });
 
   it("throws a bad request error if the order was already cancelled", async () => {
-    const userId = new mongoose.Types.ObjectId().toHexString();
-    const order = Order.build({
-      id: new mongoose.Types.ObjectId().toHexString(),
-      userId,
-      version: 0,
-      price: 20,
-      status: OrderStatus.Cancelled,
-    });
-    await order.save();
+    const { order, userId } = await createOrder(OrderStatus.Cancelled);
 
     await request(app)
       .post(baseUrl)
@@ -73,15 +74,7 @@ describe("new charge", () => {
   });
 
   it("creates a charge with stripe and returns 201 with valid inputs", async () => {
-    const userId = new mongoose.Types.ObjectId().toHexString();
-    const order = Order.build({
-      id: new mongoose.Types.ObjectId().toHexString(),
-      userId,
-      version: 0,
-      price: 20,
-      status: OrderStatus.Created,
-    });
-    await order.save();
+    const { order, userId } = await createOrder();
 
     await request(app)
       .post(baseUrl)
@@ -98,5 +91,32 @@ describe("new charge", () => {
       amount: order.price * 100,
       source: STRIPE_TEST_TOKEN,
     });
+
+    const payment = await Payment.findOne({
+      orderId: order.id,
+      stripeId: "foo", // from the mock
+    });
+
+    expect(payment).not.toBeNull();
+  });
+
+  it("saves the payment", async () => {
+    const { order, userId } = await createOrder();
+
+    await request(app)
+      .post(baseUrl)
+      .set("Cookie", global.signin(userId))
+      .send({
+        token: STRIPE_TEST_TOKEN,
+        orderId: order.id,
+      })
+      .expect(201);
+
+    const payment = await Payment.findOne({
+      orderId: order.id,
+      stripeId: "foo", // from the mock
+    });
+
+    expect(payment).not.toBeNull();
   });
 });

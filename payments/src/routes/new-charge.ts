@@ -12,6 +12,7 @@ import { natsWrapper } from "../nats-wrapper";
 import { Order } from "../models/order";
 import { baseUrl } from "../constants";
 import { stripe } from "../stripe";
+import { Payment } from "../models/payment";
 
 const router = Router();
 router.post(
@@ -36,11 +37,19 @@ router.post(
       throw new BadRequestError("Can not pay for cancelled order");
     }
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: "usd",
       amount: order.price * 100, // converting into cents
       source: token, // stripe test token "tok_visa"
     });
+
+    console.log(charge);
+
+    const payment = Payment.build({
+      orderId,
+      stripeId: charge.id,
+    });
+    await payment.save();
 
     res.status(201).send({ success: true });
   }
