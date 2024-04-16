@@ -29,6 +29,8 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
       ticketId: order.ticket.id,
     });
 
+    // we omit the order:updated publishing because order:complete is the final status
+
     msg.ack();
   }
 }
