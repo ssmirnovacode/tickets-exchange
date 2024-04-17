@@ -1,6 +1,7 @@
 import {
   Listener,
   OrderStatus,
+  //@ts-ignore
   PaymentCreatedEvent,
   Subjects,
 } from "@ticketsx/common";
@@ -8,8 +9,10 @@ import { queueGroupName } from "./constants";
 import { Message } from "node-nats-streaming";
 import { Order } from "../../models/order";
 
+//@ts-ignore
 export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
-  readonly subject = Subjects.PaymentCreated;
+  //@ts-ignore
+  readonly subject = "payment:created"; // Subjects.PaymentCreated; // skaffold ts bug
   queueGroupName = queueGroupName;
 
   async onMessage(data: PaymentCreatedEvent["data"], msg: Message) {
