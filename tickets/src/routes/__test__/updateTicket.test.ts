@@ -7,9 +7,11 @@ import { Ticket } from "../../models/ticket";
 describe("/api/tickets - PUT update ticket", () => {
   it("returns 404 if ticket with provided id doesnt exist", async () => {
     const id = new mongoose.Types.ObjectId().toHexString();
+    const sessionCookie = global.signin();
+    console.log("sessionCookie", sessionCookie);
     await request(app)
       .put(`/api/tickets/${id}`)
-      .set("Cookie", global.signin())
+      .set("Cookie", sessionCookie)
       .send({ title: "foo", price: 12 })
       .expect(404);
   });
