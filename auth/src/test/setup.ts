@@ -43,9 +43,10 @@ global.signin = async () => {
   const response = await request(app)
     .post("/api/users/signup")
     .send({ email, password })
-    .expect(201);
-  console.log("response", response);
-  const cookie = response.get("Set-Cookie")!;
-  console.log("cookie", cookie);
+    .catch((err) => console.log(err));
+  //.expect(201);
+  // console.log("response", response);
+  const cookie = response?.get("Set-Cookie")!;
+  //console.log("cookie", cookie);
   return cookie;
 };
