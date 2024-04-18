@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const EMAIL = "test@test.es";
 
 declare global {
-  var signin: () => string[];
+  var signin: () => string;
 }
 
 jest.mock("../nats-wrapper");
@@ -59,5 +59,5 @@ global.signin = () => {
 
   // add session= string upfront to match the cookie pattern and return it
 
-  return [`session=${base64}`];
+  return `session=${base64}`;
 };
