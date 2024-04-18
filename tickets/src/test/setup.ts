@@ -53,7 +53,7 @@ global.signin = () => {
   // build session object { jwt: token }
   const session = { jwt: token };
   const sessionJSON = JSON.stringify(session);
-
+  console.log(session);
   // take JSON and encode it as base64
   const base64 = Buffer.from(sessionJSON).toString("base64");
 
