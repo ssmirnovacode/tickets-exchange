@@ -96,9 +96,22 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-a {
-  color: inherit;
+a, .link {
+  background: none;
+  border: none;
+  color: rgb(0, 102, 255);
   text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+a:hover, .link:hover {
+  text-decoration: underline;
+}
+
+.form-group {
+  display: flex;
+  gap: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {

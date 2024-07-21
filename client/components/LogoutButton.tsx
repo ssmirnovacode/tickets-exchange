@@ -5,5 +5,9 @@ export default function LogoutButton() {
     // remove session cookie
   }
 
-  return <button onClick={logout}>Logout</button>;
+  return (
+    <button className="link" onClick={logout}>
+      Logout
+    </button>
+  );
 }

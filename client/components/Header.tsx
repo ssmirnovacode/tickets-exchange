@@ -16,7 +16,7 @@ export default function Header({ isLoggedIn }: HeaderProps) {
             <LogoutButton />
           </>
         ) : (
-          <div>Login</div>
+          <Link href="/login">Login</Link>
         )}
       </nav>
     </header>
